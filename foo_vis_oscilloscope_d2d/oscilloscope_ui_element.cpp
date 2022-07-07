@@ -38,7 +38,7 @@ oscilloscope_ui_element_instance::oscilloscope_ui_element_instance(ui_element_co
 }
 
 void oscilloscope_ui_element_instance::initialize_window(HWND p_parent) {
-    this->Create(p_parent, nullptr, nullptr, 0, WS_EX_STATICEDGE);
+	this->Create(p_parent, nullptr, nullptr, 0, WS_EX_LEFT);
 }
 
 void oscilloscope_ui_element_instance::set_configuration(ui_element_config::ptr p_data) {
@@ -146,7 +146,7 @@ HRESULT oscilloscope_ui_element_instance::Render() {
 
         t_ui_color colorBackground = m_callback->query_std_color(ui_color_background);
 
-        m_pRenderTarget->Clear(D2D1::ColorF(GetRValue(colorBackground) / 255.0f, GetGValue(colorBackground) / 255.0f, GetBValue(colorBackground) / 255.0f));
+        m_pRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f));
 
         if (m_vis_stream.is_valid()) {
             double time;
@@ -310,7 +310,13 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
 
         CMenu durationMenu;
         durationMenu.CreatePopupMenu();
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 50) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_50, TEXT("50 ms"));
+        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 5) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_5, TEXT("5 ms"));
+        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 10) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_10, TEXT("10 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 16) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_16, TEXT("16 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 17) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_17, TEXT("17 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 25) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_25, TEXT("25 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 40) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_40, TEXT("40 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 50) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_50, TEXT("50 ms"));
         durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 100) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_100, TEXT("100 ms"));
         durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 200) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_200, TEXT("200 ms"));
         durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 300) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_300, TEXT("300 ms"));
@@ -324,9 +330,16 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
 
         CMenu zoomMenu;
         zoomMenu.CreatePopupMenu();
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 50) ? MF_CHECKED : 0), IDM_ZOOM_50, TEXT("50 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 5) ? MF_CHECKED : 0), IDM_ZOOM_5, TEXT("5 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 10) ? MF_CHECKED : 0), IDM_ZOOM_10, TEXT("10 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 15) ? MF_CHECKED : 0), IDM_ZOOM_15, TEXT("15 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 25) ? MF_CHECKED : 0), IDM_ZOOM_25, TEXT("25 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 40) ? MF_CHECKED : 0), IDM_ZOOM_40, TEXT("40 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 50) ? MF_CHECKED : 0), IDM_ZOOM_50, TEXT("50 %"));
         zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 75) ? MF_CHECKED : 0), IDM_ZOOM_75, TEXT("75 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 100) ? MF_CHECKED : 0), IDM_ZOOM_100, TEXT("100 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 95) ? MF_CHECKED : 0), IDM_ZOOM_95, TEXT("95 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 99) ? MF_CHECKED : 0), IDM_ZOOM_99, TEXT("99 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 100) ? MF_CHECKED : 0), IDM_ZOOM_100, TEXT("100 %"));
         zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 150) ? MF_CHECKED : 0), IDM_ZOOM_150, TEXT("150 %"));
         zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 200) ? MF_CHECKED : 0), IDM_ZOOM_200, TEXT("200 %"));
         zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 300) ? MF_CHECKED : 0), IDM_ZOOM_300, TEXT("300 %"));
@@ -349,7 +362,8 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
         lineStrokeWidthMenu.CreatePopupMenu();
         lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 5) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_5, TEXT("0.5 px"));
         lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 10) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_10, TEXT("1.0 px"));
-        lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 15) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_15, TEXT("1.5 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 11) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_11, TEXT("1.1 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 15) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_15, TEXT("1.5 px"));
         lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 20) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_20, TEXT("2.0 px"));
         lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 25) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_25, TEXT("2.5 px"));
         lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 30) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_30, TEXT("3.0 px"));
@@ -386,7 +400,25 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
         case IDM_RESAMPLE_ENABLED:
             m_config.m_resample_enabled = !m_config.m_resample_enabled;
             break;
-        case IDM_WINDOW_DURATION_50:
+		case IDM_WINDOW_DURATION_5:
+			m_config.m_window_duration_millis = 5;
+			break;
+		case IDM_WINDOW_DURATION_10:
+			m_config.m_window_duration_millis = 10;
+			break;
+		case IDM_WINDOW_DURATION_16:
+			m_config.m_window_duration_millis = 16;
+			break;
+		case IDM_WINDOW_DURATION_17:
+			m_config.m_window_duration_millis = 17;
+			break;
+		case IDM_WINDOW_DURATION_25:
+			m_config.m_window_duration_millis = 25;
+			break;
+		case IDM_WINDOW_DURATION_40:
+			m_config.m_window_duration_millis = 40;
+			break;
+		case IDM_WINDOW_DURATION_50:
             m_config.m_window_duration_millis = 50;
             break;
         case IDM_WINDOW_DURATION_100:
@@ -413,13 +445,34 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
         case IDM_WINDOW_DURATION_800:
             m_config.m_window_duration_millis = 800;
             break;
-        case IDM_ZOOM_50:
+		case IDM_ZOOM_5:
+			m_config.m_zoom_percent = 5;
+			break;
+		case IDM_ZOOM_10:
+			m_config.m_zoom_percent = 10;
+			break;
+		case IDM_ZOOM_15:
+			m_config.m_zoom_percent = 15;
+			break;
+		case IDM_ZOOM_25:
+			m_config.m_zoom_percent = 25;
+			break;
+		case IDM_ZOOM_40:
+			m_config.m_zoom_percent = 40;
+			break;
+		case IDM_ZOOM_50:
             m_config.m_zoom_percent = 50;
             break;
         case IDM_ZOOM_75:
             m_config.m_zoom_percent = 75;
             break;
-        case IDM_ZOOM_100:
+		case IDM_ZOOM_95:
+			m_config.m_zoom_percent = 95;
+			break;
+		case IDM_ZOOM_99:
+			m_config.m_zoom_percent = 99;
+			break;
+		case IDM_ZOOM_100:
             m_config.m_zoom_percent = 100;
             break;
         case IDM_ZOOM_150:
@@ -462,7 +515,10 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
         case IDM_LINE_STROKE_WIDTH_10:
             m_config.m_line_stroke_width = 10;
             break;
-        case IDM_LINE_STROKE_WIDTH_15:
+		case IDM_LINE_STROKE_WIDTH_11:
+			m_config.m_line_stroke_width = 11;
+			break;
+		case IDM_LINE_STROKE_WIDTH_15:
             m_config.m_line_stroke_width = 15;
             break;
         case IDM_LINE_STROKE_WIDTH_20:
@@ -526,7 +582,7 @@ HRESULT oscilloscope_ui_element_instance::CreateDeviceResources() {
         if (SUCCEEDED(hr) && !m_pStrokeBrush) {
             t_ui_color colorText = m_callback->query_std_color(ui_color_text);
 
-            hr = m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(GetRValue(colorText) / 255.0f, GetGValue(colorText) / 255.0f, GetBValue(colorText) / 255.0f), &m_pStrokeBrush);
+            hr = m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0f, 1.0f, 0.0f), &m_pStrokeBrush);
         }
     } else {
         hr = S_FALSE;

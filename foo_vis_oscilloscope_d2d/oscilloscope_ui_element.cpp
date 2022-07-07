@@ -146,7 +146,7 @@ HRESULT oscilloscope_ui_element_instance::Render() {
 
         t_ui_color colorBackground = m_callback->query_std_color(ui_color_background);
 
-        m_pRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f));
+        m_pRenderTarget->Clear(D2D1::ColorF(GetRValue(colorBackground) / 255.0f, GetGValue(colorBackground) / 255.0f, GetBValue(colorBackground) / 255.0f));
 
         if (m_vis_stream.is_valid()) {
             double time;
@@ -582,7 +582,7 @@ HRESULT oscilloscope_ui_element_instance::CreateDeviceResources() {
         if (SUCCEEDED(hr) && !m_pStrokeBrush) {
             t_ui_color colorText = m_callback->query_std_color(ui_color_text);
 
-            hr = m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(0.0f, 1.0f, 0.0f), &m_pStrokeBrush);
+            hr = m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(GetRValue(colorText) / 255.0f, GetGValue(colorText) / 255.0f, GetBValue(colorText) / 255.0f), &m_pStrokeBrush);
         }
     } else {
         hr = S_FALSE;

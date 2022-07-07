@@ -13,13 +13,13 @@ oscilloscope_config::oscilloscope_config() {
 void oscilloscope_config::reset() {
     m_hw_rendering_enabled = true;
     m_downmix_enabled = false;
-    m_trigger_enabled = false;
+    m_trigger_enabled = true;
     m_resample_enabled = false;
     m_low_quality_enabled = false;
-    m_window_duration_millis = 100;
-    m_zoom_percent = 100;
-    m_refresh_rate_limit_hz = 20;
-    m_line_stroke_width = 10;
+    m_window_duration_millis = 16;
+    m_zoom_percent = 95;
+    m_refresh_rate_limit_hz = 60;
+    m_line_stroke_width = 15;
 }
 
 void oscilloscope_config::parse(ui_element_config_parser & parser) {
@@ -50,9 +50,9 @@ void oscilloscope_config::parse(ui_element_config_parser & parser) {
             parser >> m_hw_rendering_enabled;
             parser >> m_downmix_enabled;
             parser >> m_window_duration_millis;
-            m_window_duration_millis = pfc::clip_t<t_uint32>(m_window_duration_millis, 50, 800);
+            m_window_duration_millis = pfc::clip_t<t_uint32>(m_window_duration_millis, 5, 800);
             parser >> m_zoom_percent;
-            m_zoom_percent = pfc::clip_t<t_uint32>(m_zoom_percent, 50, 800);
+            m_zoom_percent = pfc::clip_t<t_uint32>(m_zoom_percent, 5, 800);
             break;
         default:
             console::formatter() << core_api::get_my_file_name() << ": unknown configuration format version: " << version;

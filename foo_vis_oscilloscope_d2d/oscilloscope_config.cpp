@@ -16,10 +16,10 @@ void oscilloscope_config::reset() {
     m_trigger_enabled = true;
     m_resample_enabled = false;
     m_low_quality_enabled = false;
-    m_window_duration_millis = 16;
-    m_zoom_percent = 95;
+    m_window_duration_millis = 17;
+    m_zoom_percent = 98;
     m_refresh_rate_limit_hz = 60;
-    m_line_stroke_width = 15;
+    m_line_stroke_width = 13;
 }
 
 void oscilloscope_config::parse(ui_element_config_parser & parser) {
@@ -31,7 +31,7 @@ void oscilloscope_config::parse(ui_element_config_parser & parser) {
         switch (version) {
         case 6:
             parser >> m_line_stroke_width;
-            m_line_stroke_width = pfc::clip_t<t_uint32>(m_line_stroke_width, 5, 30);
+            m_line_stroke_width = pfc::clip_t<t_uint32>(m_line_stroke_width, 1, 30);
             // fall through
         case 5:
             parser >> m_low_quality_enabled;
@@ -41,7 +41,7 @@ void oscilloscope_config::parse(ui_element_config_parser & parser) {
             // fall through
         case 3:
             parser >> m_refresh_rate_limit_hz;
-            m_refresh_rate_limit_hz = pfc::clip_t<t_uint32>(m_refresh_rate_limit_hz, 20, 200);
+            m_refresh_rate_limit_hz = pfc::clip_t<t_uint32>(m_refresh_rate_limit_hz, 20, 240);
             // fall through
         case 2:
             parser >> m_trigger_enabled;
@@ -50,9 +50,9 @@ void oscilloscope_config::parse(ui_element_config_parser & parser) {
             parser >> m_hw_rendering_enabled;
             parser >> m_downmix_enabled;
             parser >> m_window_duration_millis;
-            m_window_duration_millis = pfc::clip_t<t_uint32>(m_window_duration_millis, 5, 800);
+            m_window_duration_millis = pfc::clip_t<t_uint32>(m_window_duration_millis, 1, 10000);
             parser >> m_zoom_percent;
-            m_zoom_percent = pfc::clip_t<t_uint32>(m_zoom_percent, 5, 800);
+            m_zoom_percent = pfc::clip_t<t_uint32>(m_zoom_percent, 5, 1000);
             break;
         default:
             console::formatter() << core_api::get_my_file_name() << ": unknown configuration format version: " << version;

@@ -19,7 +19,7 @@ void oscilloscope_config::reset() {
     m_window_duration_millis = 17;
     m_zoom_percent = 98;
     m_refresh_rate_limit_hz = 60;
-    m_line_stroke_width = 13;
+    m_line_stroke_width = 17;
 }
 
 void oscilloscope_config::parse(ui_element_config_parser & parser) {
@@ -50,7 +50,7 @@ void oscilloscope_config::parse(ui_element_config_parser & parser) {
             parser >> m_hw_rendering_enabled;
             parser >> m_downmix_enabled;
             parser >> m_window_duration_millis;
-            m_window_duration_millis = pfc::clip_t<t_uint32>(m_window_duration_millis, 1, 10000);
+            m_window_duration_millis = pfc::clip_t<t_uint32>(m_window_duration_millis, 1, 800);
             parser >> m_zoom_percent;
             m_zoom_percent = pfc::clip_t<t_uint32>(m_zoom_percent, 5, 1000);
             break;

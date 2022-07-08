@@ -146,7 +146,7 @@ HRESULT oscilloscope_ui_element_instance::Render() {
 
         t_ui_color colorBackground = m_callback->query_std_color(ui_color_background);
 
-        m_pRenderTarget->Clear(D2D1::ColorF(GetRValue(colorBackground) / 255.0f, GetGValue(colorBackground) / 255.0f, GetBValue(colorBackground) / 255.0f));
+		m_pRenderTarget->Clear(D2D1::ColorF(GetRValue(colorBackground) / 255.0f, GetGValue(colorBackground) / 255.0f, GetBValue(colorBackground) / 255.0f));
 
         if (m_vis_stream.is_valid()) {
             double time;
@@ -297,243 +297,554 @@ HRESULT oscilloscope_ui_element_instance::RenderChunk(const audio_chunk &chunk) 
 
 
 void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) {
-    if (m_callback->is_edit_mode_enabled()) {
-        SetMsgHandled(FALSE);
-    } else {
-        CMenu menu;
-        menu.CreatePopupMenu();
-        menu.AppendMenu(MF_STRING, IDM_TOGGLE_FULLSCREEN, TEXT("Toggle Full-Screen Mode"));
-        menu.AppendMenu(MF_SEPARATOR);
-        menu.AppendMenu(MF_STRING | (m_config.m_downmix_enabled ? MF_CHECKED : 0), IDM_DOWNMIX_ENABLED, TEXT("Downmix Channels"));
-        menu.AppendMenu(MF_STRING | (m_config.m_low_quality_enabled ? MF_CHECKED : 0), IDM_LOW_QUALITY_ENABLED, TEXT("Low Quality Mode"));
-        menu.AppendMenu(MF_STRING | (m_config.m_trigger_enabled ? MF_CHECKED : 0), IDM_TRIGGER_ENABLED, TEXT("Trigger on Zero Crossing"));
+	if (m_callback->is_edit_mode_enabled()) {
+		SetMsgHandled(FALSE);
+	}
+	else {
+		CMenu menu;
+		menu.CreatePopupMenu();
+		menu.AppendMenu(MF_STRING, IDM_TOGGLE_FULLSCREEN, TEXT("Toggle Full-Screen Mode"));
+		menu.AppendMenu(MF_SEPARATOR);
+		menu.AppendMenu(MF_STRING | (m_config.m_downmix_enabled ? MF_CHECKED : 0), IDM_DOWNMIX_ENABLED, TEXT("Downmix Channels"));
+		menu.AppendMenu(MF_STRING | (m_config.m_low_quality_enabled ? MF_CHECKED : 0), IDM_LOW_QUALITY_ENABLED, TEXT("Low Quality Mode"));
+		menu.AppendMenu(MF_STRING | (m_config.m_trigger_enabled ? MF_CHECKED : 0), IDM_TRIGGER_ENABLED, TEXT("Trigger on Zero Crossing"));
 
-        CMenu durationMenu;
-        durationMenu.CreatePopupMenu();
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 5) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_5, TEXT("5 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 10) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_10, TEXT("10 ms"));
-	durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 16) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_16, TEXT("16 ms"));
-	durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 17) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_17, TEXT("17 ms"));
-	durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 25) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_25, TEXT("25 ms"));
-	durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 40) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_40, TEXT("40 ms"));
-	durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 50) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_50, TEXT("50 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 100) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_100, TEXT("100 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 200) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_200, TEXT("200 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 300) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_300, TEXT("300 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 400) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_400, TEXT("400 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 500) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_500, TEXT("500 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 600) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_600, TEXT("600 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 700) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_700, TEXT("700 ms"));
-        durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 800) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_800, TEXT("800 ms"));
+		CMenu durationMenu;
+		durationMenu.CreatePopupMenu();
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 1) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_1, TEXT("1 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 2) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_2, TEXT("2 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 3) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_3, TEXT("3 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 4) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_4, TEXT("4 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 5) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_5, TEXT("5 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 6) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_6, TEXT("6 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 7) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_7, TEXT("7 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 8) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_8, TEXT("8 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 9) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_9, TEXT("9 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 10) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_10, TEXT("10 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 11) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_11, TEXT("11 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 12) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_12, TEXT("12 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 13) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_13, TEXT("13 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 14) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_14, TEXT("14 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 15) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_15, TEXT("15 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 16) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_16, TEXT("16 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 17) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_17, TEXT("17 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 18) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_18, TEXT("18 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 19) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_19, TEXT("19 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 20) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_20, TEXT("20 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 25) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_25, TEXT("25 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 30) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_30, TEXT("30 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 35) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_35, TEXT("35 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 40) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_40, TEXT("40 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 45) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_45, TEXT("45 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 50) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_50, TEXT("50 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 60) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_60, TEXT("60 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 80) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_80, TEXT("80 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 100) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_100, TEXT("100 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 150) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_150, TEXT("150 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 200) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_200, TEXT("200 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 300) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_300, TEXT("300 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 400) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_400, TEXT("400 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 500) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_500, TEXT("500 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 600) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_600, TEXT("600 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 800) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_800, TEXT("800 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 1000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_1000, TEXT("1000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 1500) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_1500, TEXT("1500 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 2000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_2000, TEXT("2000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 3000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_3000, TEXT("3000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 4000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_4000, TEXT("4000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 5000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_5000, TEXT("5000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 6000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_6000, TEXT("6000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 8000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_8000, TEXT("8000 ms"));
+		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 10000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_10000, TEXT("10000 ms"));
 
-        menu.AppendMenu(MF_STRING, durationMenu, TEXT("Window Duration"));
+		menu.AppendMenu(MF_STRING, durationMenu, TEXT("Window Duration"));
 
-        CMenu zoomMenu;
-        zoomMenu.CreatePopupMenu();
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 5) ? MF_CHECKED : 0), IDM_ZOOM_5, TEXT("5 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 10) ? MF_CHECKED : 0), IDM_ZOOM_10, TEXT("10 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 15) ? MF_CHECKED : 0), IDM_ZOOM_15, TEXT("15 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 25) ? MF_CHECKED : 0), IDM_ZOOM_25, TEXT("25 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 40) ? MF_CHECKED : 0), IDM_ZOOM_40, TEXT("40 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 50) ? MF_CHECKED : 0), IDM_ZOOM_50, TEXT("50 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 75) ? MF_CHECKED : 0), IDM_ZOOM_75, TEXT("75 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 95) ? MF_CHECKED : 0), IDM_ZOOM_95, TEXT("95 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 99) ? MF_CHECKED : 0), IDM_ZOOM_99, TEXT("99 %"));
-	zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 100) ? MF_CHECKED : 0), IDM_ZOOM_100, TEXT("100 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 150) ? MF_CHECKED : 0), IDM_ZOOM_150, TEXT("150 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 200) ? MF_CHECKED : 0), IDM_ZOOM_200, TEXT("200 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 300) ? MF_CHECKED : 0), IDM_ZOOM_300, TEXT("300 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 400) ? MF_CHECKED : 0), IDM_ZOOM_400, TEXT("400 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 600) ? MF_CHECKED : 0), IDM_ZOOM_600, TEXT("600 %"));
-        zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 800) ? MF_CHECKED : 0), IDM_ZOOM_800, TEXT("800 %"));
+		CMenu zoomMenu;
+		zoomMenu.CreatePopupMenu();
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 5) ? MF_CHECKED : 0), IDM_ZOOM_5, TEXT("5 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 10) ? MF_CHECKED : 0), IDM_ZOOM_10, TEXT("10 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 15) ? MF_CHECKED : 0), IDM_ZOOM_15, TEXT("15 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 20) ? MF_CHECKED : 0), IDM_ZOOM_20, TEXT("20 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 25) ? MF_CHECKED : 0), IDM_ZOOM_25, TEXT("25 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 30) ? MF_CHECKED : 0), IDM_ZOOM_30, TEXT("30 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 35) ? MF_CHECKED : 0), IDM_ZOOM_35, TEXT("35 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 40) ? MF_CHECKED : 0), IDM_ZOOM_40, TEXT("40 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 45) ? MF_CHECKED : 0), IDM_ZOOM_45, TEXT("45 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 50) ? MF_CHECKED : 0), IDM_ZOOM_50, TEXT("50 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 55) ? MF_CHECKED : 0), IDM_ZOOM_55, TEXT("55 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 60) ? MF_CHECKED : 0), IDM_ZOOM_60, TEXT("60 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 65) ? MF_CHECKED : 0), IDM_ZOOM_65, TEXT("65 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 70) ? MF_CHECKED : 0), IDM_ZOOM_70, TEXT("70 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 75) ? MF_CHECKED : 0), IDM_ZOOM_75, TEXT("75 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 80) ? MF_CHECKED : 0), IDM_ZOOM_80, TEXT("80 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 85) ? MF_CHECKED : 0), IDM_ZOOM_85, TEXT("85 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 90) ? MF_CHECKED : 0), IDM_ZOOM_90, TEXT("90 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 95) ? MF_CHECKED : 0), IDM_ZOOM_95, TEXT("95 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 96) ? MF_CHECKED : 0), IDM_ZOOM_96, TEXT("96 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 97) ? MF_CHECKED : 0), IDM_ZOOM_97, TEXT("97 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 98) ? MF_CHECKED : 0), IDM_ZOOM_98, TEXT("98 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 99) ? MF_CHECKED : 0), IDM_ZOOM_99, TEXT("99 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 100) ? MF_CHECKED : 0), IDM_ZOOM_100, TEXT("100 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 125) ? MF_CHECKED : 0), IDM_ZOOM_125, TEXT("125 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 150) ? MF_CHECKED : 0), IDM_ZOOM_150, TEXT("150 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 200) ? MF_CHECKED : 0), IDM_ZOOM_200, TEXT("200 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 300) ? MF_CHECKED : 0), IDM_ZOOM_300, TEXT("300 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 400) ? MF_CHECKED : 0), IDM_ZOOM_400, TEXT("400 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 500) ? MF_CHECKED : 0), IDM_ZOOM_500, TEXT("500 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 600) ? MF_CHECKED : 0), IDM_ZOOM_600, TEXT("600 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 800) ? MF_CHECKED : 0), IDM_ZOOM_800, TEXT("800 %"));
+		zoomMenu.AppendMenu(MF_STRING | ((m_config.m_zoom_percent == 1000) ? MF_CHECKED : 0), IDM_ZOOM_1000, TEXT("1000 %"));
 
-        menu.AppendMenu(MF_STRING, zoomMenu, TEXT("Zoom"));
+		menu.AppendMenu(MF_STRING, zoomMenu, TEXT("Zoom"));
 
-        CMenu refreshRateLimitMenu;
-        refreshRateLimitMenu.CreatePopupMenu();
-        refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 20) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_20, TEXT("20 Hz"));
-        refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 60) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_60, TEXT("60 Hz"));
-        refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 100) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_100, TEXT("100 Hz"));
-        refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 200) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_200, TEXT("200 Hz"));
+		CMenu refreshRateLimitMenu;
+		refreshRateLimitMenu.CreatePopupMenu();
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 20) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_20, TEXT("20 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 30) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_30, TEXT("30 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 50) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_50, TEXT("50 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 60) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_60, TEXT("60 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 72) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_72, TEXT("72 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 75) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_75, TEXT("75 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 90) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_90, TEXT("90 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 120) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_120, TEXT("120 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 144) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_144, TEXT("144 Hz"));
+		refreshRateLimitMenu.AppendMenu(MF_STRING | ((m_config.m_refresh_rate_limit_hz == 240) ? MF_CHECKED : 0), IDM_REFRESH_RATE_LIMIT_240, TEXT("240 Hz"));
 
-        menu.AppendMenu(MF_STRING, refreshRateLimitMenu, TEXT("Refresh Rate Limit"));
+		menu.AppendMenu(MF_STRING, refreshRateLimitMenu, TEXT("Refresh Rate Limit"));
 
-        CMenu lineStrokeWidthMenu;
-        lineStrokeWidthMenu.CreatePopupMenu();
-        lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 5) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_5, TEXT("0.5 px"));
-        lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 10) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_10, TEXT("1.0 px"));
-	lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 11) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_11, TEXT("1.1 px"));
-	lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 15) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_15, TEXT("1.5 px"));
-        lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 20) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_20, TEXT("2.0 px"));
-        lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 25) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_25, TEXT("2.5 px"));
-        lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 30) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_30, TEXT("3.0 px"));
+		CMenu lineStrokeWidthMenu;
+		lineStrokeWidthMenu.CreatePopupMenu();
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 1) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_1, TEXT("0.1 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 2) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_2, TEXT("0.2 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 3) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_3, TEXT("0.3 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 4) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_4, TEXT("0.4 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 5) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_5, TEXT("0.5 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 6) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_6, TEXT("0.6 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 7) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_7, TEXT("0.7 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 8) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_8, TEXT("0.8 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 9) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_9, TEXT("0.9 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 10) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_10, TEXT("1.0 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 11) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_11, TEXT("1.1 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 12) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_12, TEXT("1.2 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 13) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_13, TEXT("1.3 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 14) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_14, TEXT("1.4 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 15) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_15, TEXT("1.5 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 16) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_16, TEXT("1.6 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 17) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_17, TEXT("1.7 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 18) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_18, TEXT("1.8 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 19) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_19, TEXT("1.9 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 20) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_20, TEXT("2.0 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 21) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_21, TEXT("2.1 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 22) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_22, TEXT("2.2 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 23) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_23, TEXT("2.3 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 24) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_24, TEXT("2.4 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 25) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_25, TEXT("2.5 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 26) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_26, TEXT("2.6 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 27) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_27, TEXT("2.7 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 28) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_28, TEXT("2.8 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 29) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_29, TEXT("2.9 px"));
+		lineStrokeWidthMenu.AppendMenu(MF_STRING | ((m_config.m_line_stroke_width == 30) ? MF_CHECKED : 0), IDM_LINE_STROKE_WIDTH_30, TEXT("3.0 px"));
 
-        menu.AppendMenu(MF_STRING, lineStrokeWidthMenu, TEXT("Line Stroke Width"));
+		menu.AppendMenu(MF_STRING, lineStrokeWidthMenu, TEXT("Line Stroke Width"));
 
-        menu.AppendMenu(MF_SEPARATOR);
+		menu.AppendMenu(MF_SEPARATOR);
 
-        menu.AppendMenu(MF_STRING | (m_config.m_resample_enabled ? MF_CHECKED : 0), IDM_RESAMPLE_ENABLED, TEXT("Resample For Display"));
-        menu.AppendMenu(MF_STRING | (m_config.m_hw_rendering_enabled ? MF_CHECKED : 0), IDM_HW_RENDERING_ENABLED, TEXT("Allow Hardware Rendering"));
+		menu.AppendMenu(MF_STRING | (m_config.m_resample_enabled ? MF_CHECKED : 0), IDM_RESAMPLE_ENABLED, TEXT("Resample For Display"));
+		menu.AppendMenu(MF_STRING | (m_config.m_hw_rendering_enabled ? MF_CHECKED : 0), IDM_HW_RENDERING_ENABLED, TEXT("Allow Hardware Rendering"));
 
-        menu.SetMenuDefaultItem(IDM_TOGGLE_FULLSCREEN);
+		menu.SetMenuDefaultItem(IDM_TOGGLE_FULLSCREEN);
 
-        int cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this);
+		int cmd = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this);
 
-        switch (cmd) {
-        case IDM_TOGGLE_FULLSCREEN:
-            ToggleFullScreen();
-            break;
-        case IDM_HW_RENDERING_ENABLED:
-            m_config.m_hw_rendering_enabled = !m_config.m_hw_rendering_enabled;
-            DiscardDeviceResources();
-            break;
-        case IDM_DOWNMIX_ENABLED:
-            m_config.m_downmix_enabled = !m_config.m_downmix_enabled;
-            UpdateChannelMode();
-            break;
-        case IDM_LOW_QUALITY_ENABLED:
-            m_config.m_low_quality_enabled = !m_config.m_low_quality_enabled;
-            break;
-        case IDM_TRIGGER_ENABLED:
-            m_config.m_trigger_enabled = !m_config.m_trigger_enabled;
-            break;
-        case IDM_RESAMPLE_ENABLED:
-            m_config.m_resample_enabled = !m_config.m_resample_enabled;
-            break;
-	case IDM_WINDOW_DURATION_5:
-		m_config.m_window_duration_millis = 5;
-		break;
-	case IDM_WINDOW_DURATION_10:
-		m_config.m_window_duration_millis = 10;
-		break;
-	case IDM_WINDOW_DURATION_16:
-		m_config.m_window_duration_millis = 16;
-		break;
-	case IDM_WINDOW_DURATION_17:
-		m_config.m_window_duration_millis = 17;
-		break;
-	case IDM_WINDOW_DURATION_25:
-		m_config.m_window_duration_millis = 25;
-		break;
-	case IDM_WINDOW_DURATION_40:
-		m_config.m_window_duration_millis = 40;
-		break;
-	case IDM_WINDOW_DURATION_50:
-            m_config.m_window_duration_millis = 50;
-            break;
-        case IDM_WINDOW_DURATION_100:
-            m_config.m_window_duration_millis = 100;
-            break;
-        case IDM_WINDOW_DURATION_200:
-            m_config.m_window_duration_millis = 200;
-            break;
-        case IDM_WINDOW_DURATION_300:
-            m_config.m_window_duration_millis = 300;
-            break;
-        case IDM_WINDOW_DURATION_400:
-            m_config.m_window_duration_millis = 400;
-            break;
-        case IDM_WINDOW_DURATION_500:
-            m_config.m_window_duration_millis = 500;
-            break;
-        case IDM_WINDOW_DURATION_600:
-            m_config.m_window_duration_millis = 600;
-            break;
-        case IDM_WINDOW_DURATION_700:
-            m_config.m_window_duration_millis = 700;
-            break;
-        case IDM_WINDOW_DURATION_800:
-            m_config.m_window_duration_millis = 800;
-            break;
-	case IDM_ZOOM_5:
-		m_config.m_zoom_percent = 5;
-		break;
-	case IDM_ZOOM_10:
-		m_config.m_zoom_percent = 10;
-		break;
-	case IDM_ZOOM_15:
-		m_config.m_zoom_percent = 15;
-		break;
-	case IDM_ZOOM_25:
-		m_config.m_zoom_percent = 25;
-		break;
-	case IDM_ZOOM_40:
-		m_config.m_zoom_percent = 40;
-		break;
-	case IDM_ZOOM_50:
-            m_config.m_zoom_percent = 50;
-            break;
-        case IDM_ZOOM_75:
-            m_config.m_zoom_percent = 75;
-            break;
-	case IDM_ZOOM_95:
-		m_config.m_zoom_percent = 95;
-		break;
-	case IDM_ZOOM_99:
-		m_config.m_zoom_percent = 99;
-		break;
-	case IDM_ZOOM_100:
-            m_config.m_zoom_percent = 100;
-            break;
-        case IDM_ZOOM_150:
-            m_config.m_zoom_percent = 150;
-            break;
-        case IDM_ZOOM_200:
-            m_config.m_zoom_percent = 200;
-            break;
-        case IDM_ZOOM_300:
-            m_config.m_zoom_percent = 300;
-            break;
-        case IDM_ZOOM_400:
-            m_config.m_zoom_percent = 400;
-            break;
-        case IDM_ZOOM_600:
-            m_config.m_zoom_percent = 600;
-            break;
-        case IDM_ZOOM_800:
-            m_config.m_zoom_percent = 800;
-            break;
-        case IDM_REFRESH_RATE_LIMIT_20:
-            m_config.m_refresh_rate_limit_hz = 20;
-            UpdateRefreshRateLimit();
-            break;
-        case IDM_REFRESH_RATE_LIMIT_60:
-            m_config.m_refresh_rate_limit_hz = 60;
-            UpdateRefreshRateLimit();
-            break;
-        case IDM_REFRESH_RATE_LIMIT_100:
-            m_config.m_refresh_rate_limit_hz = 100;
-            UpdateRefreshRateLimit();
-            break;
-        case IDM_REFRESH_RATE_LIMIT_200:
-            m_config.m_refresh_rate_limit_hz = 200;
-            UpdateRefreshRateLimit();
-            break;
-        case IDM_LINE_STROKE_WIDTH_5:
-            m_config.m_line_stroke_width = 5;
-            break;
-        case IDM_LINE_STROKE_WIDTH_10:
-            m_config.m_line_stroke_width = 10;
-            break;
-	case IDM_LINE_STROKE_WIDTH_11:
-		m_config.m_line_stroke_width = 11;
-		break;
-	case IDM_LINE_STROKE_WIDTH_15:
-            m_config.m_line_stroke_width = 15;
-            break;
-        case IDM_LINE_STROKE_WIDTH_20:
-            m_config.m_line_stroke_width = 20;
-            break;
-        case IDM_LINE_STROKE_WIDTH_25:
-            m_config.m_line_stroke_width = 25;
-            break;
-        case IDM_LINE_STROKE_WIDTH_30:
-            m_config.m_line_stroke_width = 30;
-            break;
-        }
+		switch (cmd) {
+		case IDM_TOGGLE_FULLSCREEN:
+			ToggleFullScreen();
+			break;
+		case IDM_HW_RENDERING_ENABLED:
+			m_config.m_hw_rendering_enabled = !m_config.m_hw_rendering_enabled;
+			DiscardDeviceResources();
+			break;
+		case IDM_DOWNMIX_ENABLED:
+			m_config.m_downmix_enabled = !m_config.m_downmix_enabled;
+			UpdateChannelMode();
+			break;
+		case IDM_LOW_QUALITY_ENABLED:
+			m_config.m_low_quality_enabled = !m_config.m_low_quality_enabled;
+			break;
+		case IDM_TRIGGER_ENABLED:
+			m_config.m_trigger_enabled = !m_config.m_trigger_enabled;
+			break;
+		case IDM_RESAMPLE_ENABLED:
+			m_config.m_resample_enabled = !m_config.m_resample_enabled;
+			break;
+		case IDM_WINDOW_DURATION_1:
+			m_config.m_window_duration_millis = 1;
+			break;
+		case IDM_WINDOW_DURATION_2:
+			m_config.m_window_duration_millis = 2;
+			break;
+		case IDM_WINDOW_DURATION_3:
+			m_config.m_window_duration_millis = 3;
+			break;
+		case IDM_WINDOW_DURATION_4:
+			m_config.m_window_duration_millis = 4;
+			break;
+		case IDM_WINDOW_DURATION_5:
+			m_config.m_window_duration_millis = 5;
+			break;
+		case IDM_WINDOW_DURATION_6:
+			m_config.m_window_duration_millis = 6;
+			break;
+		case IDM_WINDOW_DURATION_7:
+			m_config.m_window_duration_millis = 7;
+			break;
+		case IDM_WINDOW_DURATION_8:
+			m_config.m_window_duration_millis = 8;
+			break;
+		case IDM_WINDOW_DURATION_9:
+			m_config.m_window_duration_millis = 9;
+			break;
+		case IDM_WINDOW_DURATION_10:
+			m_config.m_window_duration_millis = 10;
+			break;
+		case IDM_WINDOW_DURATION_11:
+			m_config.m_window_duration_millis = 11;
+			break;
+		case IDM_WINDOW_DURATION_12:
+			m_config.m_window_duration_millis = 12;
+			break;
+		case IDM_WINDOW_DURATION_13:
+			m_config.m_window_duration_millis = 13;
+			break;
+		case IDM_WINDOW_DURATION_14:
+			m_config.m_window_duration_millis = 14;
+			break;
+		case IDM_WINDOW_DURATION_15:
+			m_config.m_window_duration_millis = 15;
+			break;
+		case IDM_WINDOW_DURATION_16:
+			m_config.m_window_duration_millis = 16;
+			break;
+		case IDM_WINDOW_DURATION_17:
+			m_config.m_window_duration_millis = 17;
+			break;
+		case IDM_WINDOW_DURATION_18:
+			m_config.m_window_duration_millis = 18;
+			break;
+		case IDM_WINDOW_DURATION_19:
+			m_config.m_window_duration_millis = 19;
+			break;
+		case IDM_WINDOW_DURATION_20:
+			m_config.m_window_duration_millis = 20;
+			break;
+		case IDM_WINDOW_DURATION_25:
+			m_config.m_window_duration_millis = 25;
+			break;
+		case IDM_WINDOW_DURATION_30:
+			m_config.m_window_duration_millis = 30;
+			break;
+		case IDM_WINDOW_DURATION_35:
+			m_config.m_window_duration_millis = 35;
+			break;
+		case IDM_WINDOW_DURATION_40:
+			m_config.m_window_duration_millis = 40;
+			break;
+		case IDM_WINDOW_DURATION_45:
+			m_config.m_window_duration_millis = 45;
+			break;
+		case IDM_WINDOW_DURATION_50:
+			m_config.m_window_duration_millis = 50;
+			break;
+		case IDM_WINDOW_DURATION_60:
+			m_config.m_window_duration_millis = 60;
+			break;
+		case IDM_WINDOW_DURATION_80:
+			m_config.m_window_duration_millis = 80;
+			break;
+		case IDM_WINDOW_DURATION_100:
+			m_config.m_window_duration_millis = 100;
+			break;
+		case IDM_WINDOW_DURATION_150:
+			m_config.m_window_duration_millis = 150;
+			break;
+		case IDM_WINDOW_DURATION_200:
+			m_config.m_window_duration_millis = 200;
+			break;
+		case IDM_WINDOW_DURATION_300:
+			m_config.m_window_duration_millis = 300;
+			break;
+		case IDM_WINDOW_DURATION_400:
+			m_config.m_window_duration_millis = 400;
+			break;
+		case IDM_WINDOW_DURATION_500:
+			m_config.m_window_duration_millis = 500;
+			break;
+		case IDM_WINDOW_DURATION_600:
+			m_config.m_window_duration_millis = 600;
+			break;
+		case IDM_WINDOW_DURATION_800:
+			m_config.m_window_duration_millis = 800;
+			break;
+		case IDM_WINDOW_DURATION_1000:
+			m_config.m_window_duration_millis = 1000;
+			break;
+		case IDM_WINDOW_DURATION_1500:
+			m_config.m_window_duration_millis = 1500;
+			break;
+		case IDM_WINDOW_DURATION_2000:
+			m_config.m_window_duration_millis = 2000;
+			break;
+		case IDM_WINDOW_DURATION_3000:
+			m_config.m_window_duration_millis = 3000;
+			break;
+		case IDM_WINDOW_DURATION_4000:
+			m_config.m_window_duration_millis = 4000;
+			break;
+		case IDM_WINDOW_DURATION_5000:
+			m_config.m_window_duration_millis = 5000;
+			break;
+		case IDM_WINDOW_DURATION_6000:
+			m_config.m_window_duration_millis = 6000;
+			break;
+		case IDM_WINDOW_DURATION_8000:
+			m_config.m_window_duration_millis = 8000;
+			break;
+		case IDM_WINDOW_DURATION_10000:
+			m_config.m_window_duration_millis = 10000;
+			break;
+		case IDM_ZOOM_5:
+			m_config.m_zoom_percent = 5;
+			break;
+		case IDM_ZOOM_10:
+			m_config.m_zoom_percent = 10;
+			break;
+		case IDM_ZOOM_15:
+			m_config.m_zoom_percent = 15;
+			break;
+		case IDM_ZOOM_20:
+			m_config.m_zoom_percent = 20;
+			break;
+		case IDM_ZOOM_25:
+			m_config.m_zoom_percent = 25;
+			break;
+		case IDM_ZOOM_30:
+			m_config.m_zoom_percent = 30;
+			break;
+		case IDM_ZOOM_35:
+			m_config.m_zoom_percent = 35;
+			break;
+		case IDM_ZOOM_40:
+			m_config.m_zoom_percent = 40;
+			break;
+		case IDM_ZOOM_45:
+			m_config.m_zoom_percent = 45;
+			break;
+		case IDM_ZOOM_50:
+			m_config.m_zoom_percent = 50;
+			break;
+		case IDM_ZOOM_55:
+			m_config.m_zoom_percent = 55;
+			break;
+		case IDM_ZOOM_60:
+			m_config.m_zoom_percent = 60;
+			break;
+		case IDM_ZOOM_65:
+			m_config.m_zoom_percent = 65;
+			break;
+		case IDM_ZOOM_70:
+			m_config.m_zoom_percent = 70;
+			break;
+		case IDM_ZOOM_75:
+			m_config.m_zoom_percent = 75;
+			break;
+		case IDM_ZOOM_80:
+			m_config.m_zoom_percent = 80;
+			break;
+		case IDM_ZOOM_85:
+			m_config.m_zoom_percent = 85;
+			break;
+		case IDM_ZOOM_90:
+			m_config.m_zoom_percent = 90;
+			break;
+		case IDM_ZOOM_95:
+			m_config.m_zoom_percent = 95;
+			break;
+		case IDM_ZOOM_96:
+			m_config.m_zoom_percent = 96;
+			break;
+		case IDM_ZOOM_97:
+			m_config.m_zoom_percent = 97;
+			break;
+		case IDM_ZOOM_98:
+			m_config.m_zoom_percent = 98;
+			break;
+		case IDM_ZOOM_99:
+			m_config.m_zoom_percent = 99;
+			break;
+		case IDM_ZOOM_100:
+			m_config.m_zoom_percent = 100;
+			break;
+		case IDM_ZOOM_125:
+			m_config.m_zoom_percent = 125;
+			break;
+		case IDM_ZOOM_150:
+			m_config.m_zoom_percent = 150;
+			break;
+		case IDM_ZOOM_200:
+			m_config.m_zoom_percent = 200;
+			break;
+		case IDM_ZOOM_300:
+			m_config.m_zoom_percent = 300;
+			break;
+		case IDM_ZOOM_400:
+			m_config.m_zoom_percent = 400;
+			break;
+		case IDM_ZOOM_500:
+			m_config.m_zoom_percent = 500;
+			break;
+		case IDM_ZOOM_600:
+			m_config.m_zoom_percent = 600;
+			break;
+		case IDM_ZOOM_800:
+			m_config.m_zoom_percent = 800;
+			break;
+		case IDM_ZOOM_1000:
+			m_config.m_zoom_percent = 1000;
+			break;
+		case IDM_REFRESH_RATE_LIMIT_20:
+			m_config.m_refresh_rate_limit_hz = 20;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_30:
+			m_config.m_refresh_rate_limit_hz = 30;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_50:
+			m_config.m_refresh_rate_limit_hz = 50;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_60:
+			m_config.m_refresh_rate_limit_hz = 60;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_72:
+			m_config.m_refresh_rate_limit_hz = 72;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_75:
+			m_config.m_refresh_rate_limit_hz = 75;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_90:
+			m_config.m_refresh_rate_limit_hz = 90;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_120:
+			m_config.m_refresh_rate_limit_hz = 120;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_144:
+			m_config.m_refresh_rate_limit_hz = 144;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_REFRESH_RATE_LIMIT_240:
+			m_config.m_refresh_rate_limit_hz = 240;
+			UpdateRefreshRateLimit();
+			break;
+		case IDM_LINE_STROKE_WIDTH_1:
+			m_config.m_line_stroke_width = 1;
+			break;
+		case IDM_LINE_STROKE_WIDTH_2:
+			m_config.m_line_stroke_width = 2;
+			break;
+		case IDM_LINE_STROKE_WIDTH_3:
+			m_config.m_line_stroke_width = 3;
+			break;
+		case IDM_LINE_STROKE_WIDTH_4:
+			m_config.m_line_stroke_width = 4;
+			break;
+		case IDM_LINE_STROKE_WIDTH_5:
+			m_config.m_line_stroke_width = 5;
+			break;
+		case IDM_LINE_STROKE_WIDTH_6:
+			m_config.m_line_stroke_width = 6;
+			break;
+		case IDM_LINE_STROKE_WIDTH_7:
+			m_config.m_line_stroke_width = 7;
+			break;
+		case IDM_LINE_STROKE_WIDTH_8:
+			m_config.m_line_stroke_width = 8;
+			break;
+		case IDM_LINE_STROKE_WIDTH_9:
+			m_config.m_line_stroke_width = 9;
+			break;
+		case IDM_LINE_STROKE_WIDTH_10:
+			m_config.m_line_stroke_width = 10;
+			break;
+		case IDM_LINE_STROKE_WIDTH_11:
+			m_config.m_line_stroke_width = 11;
+			break;
+		case IDM_LINE_STROKE_WIDTH_12:
+			m_config.m_line_stroke_width = 12;
+			break;
+		case IDM_LINE_STROKE_WIDTH_13:
+			m_config.m_line_stroke_width = 13;
+			break;
+		case IDM_LINE_STROKE_WIDTH_14:
+			m_config.m_line_stroke_width = 14;
+			break;
+		case IDM_LINE_STROKE_WIDTH_15:
+			m_config.m_line_stroke_width = 15;
+			break;
+		case IDM_LINE_STROKE_WIDTH_16:
+			m_config.m_line_stroke_width = 16;
+			break;
+		case IDM_LINE_STROKE_WIDTH_17:
+			m_config.m_line_stroke_width = 17;
+			break;
+		case IDM_LINE_STROKE_WIDTH_18:
+			m_config.m_line_stroke_width = 18;
+			break;
+		case IDM_LINE_STROKE_WIDTH_19:
+			m_config.m_line_stroke_width = 19;
+			break;
+		case IDM_LINE_STROKE_WIDTH_20:
+			m_config.m_line_stroke_width = 20;
+			break;
+		case IDM_LINE_STROKE_WIDTH_21:
+			m_config.m_line_stroke_width = 21;
+			break;
+		case IDM_LINE_STROKE_WIDTH_22:
+			m_config.m_line_stroke_width = 22;
+			break;
+		case IDM_LINE_STROKE_WIDTH_23:
+			m_config.m_line_stroke_width = 23;
+			break;
+		case IDM_LINE_STROKE_WIDTH_24:
+			m_config.m_line_stroke_width = 24;
+			break;
+		case IDM_LINE_STROKE_WIDTH_25:
+			m_config.m_line_stroke_width = 25;
+			break;
+		case IDM_LINE_STROKE_WIDTH_26:
+			m_config.m_line_stroke_width = 26;
+			break;
+		case IDM_LINE_STROKE_WIDTH_27:
+			m_config.m_line_stroke_width = 27;
+			break;
+		case IDM_LINE_STROKE_WIDTH_28:
+			m_config.m_line_stroke_width = 28;
+			break;
+		case IDM_LINE_STROKE_WIDTH_29:
+			m_config.m_line_stroke_width = 29;
+			break;
+		case IDM_LINE_STROKE_WIDTH_30:
+			m_config.m_line_stroke_width = 30;
+			break;
+		}
 
-        Invalidate();
-    }
+		Invalidate();
+	}
 }
 
 void oscilloscope_ui_element_instance::OnLButtonDblClk(UINT nFlags, CPoint point) {
@@ -582,7 +893,7 @@ HRESULT oscilloscope_ui_element_instance::CreateDeviceResources() {
         if (SUCCEEDED(hr) && !m_pStrokeBrush) {
             t_ui_color colorText = m_callback->query_std_color(ui_color_text);
 
-            hr = m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(GetRValue(colorText) / 255.0f, GetGValue(colorText) / 255.0f, GetBValue(colorText) / 255.0f), &m_pStrokeBrush);
+			hr = m_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(GetRValue(colorText) / 255.0f, GetGValue(colorText) / 255.0f, GetBValue(colorText) / 255.0f), &m_pStrokeBrush);
         }
     } else {
         hr = S_FALSE;

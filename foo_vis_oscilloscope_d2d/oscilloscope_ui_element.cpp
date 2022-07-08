@@ -347,15 +347,6 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
 		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 500) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_500, TEXT("500 ms"));
 		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 600) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_600, TEXT("600 ms"));
 		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 800) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_800, TEXT("800 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 1000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_1000, TEXT("1000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 1500) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_1500, TEXT("1500 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 2000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_2000, TEXT("2000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 3000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_3000, TEXT("3000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 4000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_4000, TEXT("4000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 5000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_5000, TEXT("5000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 6000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_6000, TEXT("6000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 8000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_8000, TEXT("8000 ms"));
-		durationMenu.AppendMenu(MF_STRING | ((m_config.m_window_duration_millis == 10000) ? MF_CHECKED : 0), IDM_WINDOW_DURATION_10000, TEXT("10000 ms"));
 
 		menu.AppendMenu(MF_STRING, durationMenu, TEXT("Window Duration"));
 
@@ -584,33 +575,6 @@ void oscilloscope_ui_element_instance::OnContextMenu(CWindow wnd, CPoint point) 
 			break;
 		case IDM_WINDOW_DURATION_800:
 			m_config.m_window_duration_millis = 800;
-			break;
-		case IDM_WINDOW_DURATION_1000:
-			m_config.m_window_duration_millis = 1000;
-			break;
-		case IDM_WINDOW_DURATION_1500:
-			m_config.m_window_duration_millis = 1500;
-			break;
-		case IDM_WINDOW_DURATION_2000:
-			m_config.m_window_duration_millis = 2000;
-			break;
-		case IDM_WINDOW_DURATION_3000:
-			m_config.m_window_duration_millis = 3000;
-			break;
-		case IDM_WINDOW_DURATION_4000:
-			m_config.m_window_duration_millis = 4000;
-			break;
-		case IDM_WINDOW_DURATION_5000:
-			m_config.m_window_duration_millis = 5000;
-			break;
-		case IDM_WINDOW_DURATION_6000:
-			m_config.m_window_duration_millis = 6000;
-			break;
-		case IDM_WINDOW_DURATION_8000:
-			m_config.m_window_duration_millis = 8000;
-			break;
-		case IDM_WINDOW_DURATION_10000:
-			m_config.m_window_duration_millis = 10000;
 			break;
 		case IDM_ZOOM_5:
 			m_config.m_zoom_percent = 5;
